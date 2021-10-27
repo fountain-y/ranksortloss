@@ -9,11 +9,22 @@ class RankSort(torch.autograd.Function):
         #Filter fg logits
         fg_labels = (targets > 0.)
         fg_logits = logits[fg_labels]
+        if min(fg_logits.shape) == 0:
+            # fg_labels[targets.argmax()] = True
+            # fg_logits = logits[fg_labels]
+            print('fg_logits shape zero!')
+            ctx.save_for_backward(classification_grads)
+            return torch.zeros(1).cuda().mean(), torch.zeros(1).cuda().mean()
         fg_targets = targets[fg_labels]
+        
         fg_num = len(fg_logits)
 
         #Do not use bg with scores less than minimum fg logit
         #since changing its score does not have an effect on precision
+        if min(fg_logits.shape) == 0:
+            print('fg_logits:', fg_logits.shape, fg_logits)
+            print('fg_labels:', fg_labels.shape, fg_labels)
+        
         threshold_logit = torch.min(fg_logits)-delta_RS
         relevant_bg_labels=((targets==0) & (logits>=threshold_logit))
         

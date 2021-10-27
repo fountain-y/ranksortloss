@@ -157,7 +157,15 @@ class RankBasedRPNHead(RPNTestMixin, AnchorHead):
                 ranking_loss, sorting_loss = self.loss_rank.apply(flat_preds, flat_labels)
 
                 self.SB_weight = (ranking_loss+sorting_loss).detach()/float(loss_bbox.item())
-                loss_bbox *= self.SB_weight
+                if ranking_loss == 0 and sorting_loss == 0:
+                    print(self.SB_weight)
+                    print(loss_bbox)
+                    self.SB_weight = torch.tensor(0.).cuda()
+                    loss_bbox = torch.tensor(0.).cuda()
+                    print(self.SB_weight)
+                    print(loss_bbox)
+                else:
+                    loss_bbox *= self.SB_weight
 
                 return dict(loss_rpn_rank=self.head_weight*ranking_loss, loss_rpn_sort=self.head_weight*sorting_loss, loss_rpn_bbox=self.head_weight*loss_bbox)
 
