@@ -31,6 +31,9 @@ from .transformer_head import TransformerHead
 from .vfnet_head import VFNetHead
 from .yolact_head import YOLACTHead, YOLACTProtonet, YOLACTSegmHead
 from .yolo_head import YOLOV3Head
+# from .alrp_loss_fovea_head import aLRPLossFoveaHead
+# from .alrp_loss_rpn_head import aLRPLossRPNHead
+# from .alrp_loss_retina_head import aLRPLossRetinaHead
 
 __all__ = [
     'AnchorFreeHead', 'AnchorHead', 'GuidedAnchorHead', 'FeatureAdaption',
@@ -42,4 +45,5 @@ __all__ = [
     'SABLRetinaHead', 'CentripetalHead', 'VFNetHead', 'TransformerHead',
     'StageCascadeRPNHead', 'CascadeRPNHead', 'RankBasedATSSHead', 'RankBasedPAAHead',   
     'RankSortYOLACTHead', 'RankSortYOLACTProtonet', 'QFLHead'
+    # ,'aLRPLossFoveaHead', 'aLRPLossRPNHead', 'aLRPLossRetinaHead'
     ]

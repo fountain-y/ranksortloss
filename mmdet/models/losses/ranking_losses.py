@@ -74,7 +74,8 @@ class RankSort(torch.autograd.Function):
             target_sorting_error= torch.sum(target_sorted_order*(1-fg_targets))/rank_pos_target
 
             #Compute sorting error on example ii
-            sorting_error[ii] = current_sorting_error - target_sorting_error
+            #Add parm lambda
+            sorting_error[ii] = 1.0 * (current_sorting_error - target_sorting_error)
   
             #Identity Update for Ranking Error 
             if FP_num > eps:

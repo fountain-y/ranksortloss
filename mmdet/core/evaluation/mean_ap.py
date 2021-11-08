@@ -8,6 +8,8 @@ from terminaltables import AsciiTable
 from .bbox_overlaps import bbox_overlaps
 from .class_names import get_classes
 
+import pandas as pd
+
 
 def average_precision(recalls, precisions, mode='area'):
     """Calculate average precision (for single or multiple scales).
@@ -454,9 +456,12 @@ def print_map_summary(mean_ap,
 
     if not isinstance(mean_ap, list):
         mean_ap = [mean_ap]
-    
+
     # header = ['class', 'gts', 'dets', 'recall', 'ap']
     header = ['class', 'gts', 'dets', 'recall', 'precision', 'ap']
+
+    df = pd.DataFrame(columns=header)
+
     for i in range(num_scales):
         if scale_ranges is not None:
             print_log(f'Scale range {scale_ranges[i]}', logger=logger)
@@ -474,6 +479,17 @@ def print_map_summary(mean_ap,
                 f'{aps[i, j]:.3f}'
             ]
             table_data.append(row_data)
+
+            df = df.append({
+                'class':label_names[j],
+                'gts':num_gts[i, j],
+                'dets':results[j]['num_dets'],
+                'recall':f'{recalls[i, j]:.4f}',
+                'precision':f'{precisions[i, j]:.4f}',
+                'ap':f'{aps[i, j]:.4f}',
+            },
+            ignore_index=True)
+
             tpcnt += num_gts[i, j] * recalls[i, j]
             gtcnt += num_gts[i, j]
             detcnt += results[j]['num_dets']
@@ -485,8 +501,12 @@ def print_map_summary(mean_ap,
         print_log('\n' + table.table, logger=logger)
 
         print('\ntp:', tpcnt)
+        print('fp:', detcnt - tpcnt)
+        print('fn:', gtcnt - tpcnt)
         print('det:', detcnt)
         print('gt:', gtcnt)
 
         print('mean recall:', np.mean(recalls[i]))
         print('mean precision:', np.mean(precisions[i]))
+
+        df.to_csv('result.csv', sep=',', index=False, encoding='utf-8')
