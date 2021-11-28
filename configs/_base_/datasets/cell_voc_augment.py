@@ -9,6 +9,60 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
+    # dict(
+    #     type='AutoAugment',
+    #     policies = [
+    #         [
+    #             dict(
+    #                 type='Rotate',
+    #                 prob=0.6,
+    #                 level=10,
+    #                 img_fill_val=(200.70155665, 188.35836887, 217.22723671),
+    #             ),
+    #         ],
+    #         [
+    #             dict(
+    #                 type='Translate',
+    #                 prob=0.6,
+    #                 level=10,
+    #                 img_fill_val=(200.70155665, 188.35836887, 217.22723671),
+    #             ),
+    #         ],
+    #     ],
+    # ),
+    dict(
+        type='Albu',
+        transforms=[
+            dict(
+                type='HorizontalFlip',
+                p=0.5,
+            ),
+            dict(
+                type='VerticalFlip',
+                p=0.5,
+            ),
+            dict(
+                type='ShiftScaleRotate',
+                p=0.5,
+            ),
+            dict(
+                type='GaussNoise',
+                p=0.5,
+            ),
+        ],
+        bbox_params=dict(
+            type='BboxParams',
+            format='pascal_voc',
+            label_fields=['gt_labels'],
+            min_visibility=0.0,
+            filter_lost_elements=True),
+        keymap={
+            'img': 'image',
+            'gt_bboxes': 'bboxes'
+        },
+        update_pad_shape=False,
+        skip_img_without_anno=True,
+    ),
     dict(type='Resize', img_scale=(2000, 1500), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
