@@ -509,4 +509,4 @@ def print_map_summary(mean_ap,
         print('mean recall:', np.mean(recalls[i]))
         print('mean precision:', np.mean(precisions[i]))
 
-        df.to_csv('result.csv', sep=',', index=False, encoding='utf-8')
+        df.to_csv('result.csv', sep=',', index=False, encoding='utf_8_sig')

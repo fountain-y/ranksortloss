@@ -36,13 +36,13 @@ train_cfg = dict(
 # This can decrease the performance by 0.01 AP.
 # test_cfg = dict(rcnn=dict(score_thr=0.40))
 test_cfg = dict(
-            rcnn=dict(score_thr=0.4),
+            rcnn=dict(score_thr=0.9),
             nms=dict(class_agnostic='True')
             )
 
 data = dict(
-    samples_per_gpu=2,
-    workers_per_gpu=2)
+    samples_per_gpu=1,
+    workers_per_gpu=1)
 
 optimizer = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0001)
 total_epochs = 30
